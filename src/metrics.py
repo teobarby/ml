@@ -16,13 +16,11 @@ def rmse(y_true, y_pred):
 
 
 def r2_score(y_true, y_pred):
-    """Coefficiente di determinazione R^2 (slide Multivar 21-22).
+    """Coefficiente di determinazione R^2.
 
     R^2 = 1 - SS_res / SS_tot
     dove SS_res = sum (y - y_hat)^2  e  SS_tot = sum (y - media_y)^2.
-    E' la proporzione di varianza totale dei dati spiegata dal modello:
-    vale 1 per una predizione perfetta, 0 se predice sempre la media.
-    Le slide lo chiamano anche "correlation/determination coefficient".
+    Vale 1 per una predizione perfetta, 0 se predice sempre la media.
     """
     y_true = np.asarray(y_true, dtype=float).ravel()
     y_pred = np.asarray(y_pred, dtype=float).ravel()
@@ -41,11 +39,11 @@ def regression_report(y_true, y_pred):
 
 
 # ======================================================================
-# Metriche di classificazione (slide "8.ML_Evaluation")
+# Metriche di classificazione
 # ======================================================================
 
 def confusion_matrix(y_true, y_pred, labels=None):
-    """Matrice di confusione (slide 32).
+    """Matrice di confusione.
 
     Restituisce la matrice C dove C[i, j] = numero di esempi di classe reale
     labels[i] predetti come labels[j]. Per un problema binario con labels=[pos, neg]
@@ -64,7 +62,7 @@ def confusion_matrix(y_true, y_pred, labels=None):
 
 
 def accuracy(y_true, y_pred):
-    """Frazione di classificazioni corrette: (TP + TN) / m (slide 33)."""
+    """Frazione di classificazioni corrette: (TP + TN) / m."""
     y_true = np.asarray(y_true).ravel()
     y_pred = np.asarray(y_pred).ravel()
     return np.mean(y_true == y_pred)
@@ -82,23 +80,23 @@ def _binary_counts(y_true, y_pred, pos_label):
 
 
 def precision(y_true, y_pred, pos_label=1):
-    """Precision = TP / (TP + FP): dei predetti positivi, quanti lo sono davvero (slide 41)."""
+    """Precision = TP / (TP + FP): dei predetti positivi, quanti lo sono davvero."""
     tp, fp, _, _ = _binary_counts(y_true, y_pred, pos_label)
     return tp / (tp + fp) if (tp + fp) > 0 else 0.0
 
 
 def recall(y_true, y_pred, pos_label=1):
-    """Recall = TP / (TP + FN): dei positivi reali, quanti ne troviamo (slide 41).
+    """Recall = TP / (TP + FN): dei positivi reali, quanti vengono individuati.
 
     Nel contesto medico e' la sensibilita': la quota di malati effettivamente
-    individuati (importante non mancarne -- slide 44).
+    individuati (importante non mancarne).
     """
     tp, _, fn, _ = _binary_counts(y_true, y_pred, pos_label)
     return tp / (tp + fn) if (tp + fn) > 0 else 0.0
 
 
 def f1_score(y_true, y_pred, pos_label=1):
-    """F1 = media armonica di precision e recall (slide 47)."""
+    """F1 = media armonica di precision e recall."""
     p = precision(y_true, y_pred, pos_label)
     r = recall(y_true, y_pred, pos_label)
     return 2 * p * r / (p + r) if (p + r) > 0 else 0.0
@@ -115,11 +113,11 @@ def classification_report(y_true, y_pred, pos_label=1):
 
 
 # ======================================================================
-# Metriche di clustering (slide "14.Clustering")
+# Metriche di clustering
 # ======================================================================
 
 def purity(y_true, labels):
-    """Purezza (slide 69): validazione ESTERNA contro le classi vere.
+    """Purezza: validazione ESTERNA contro le classi vere.
 
         P = (1/N) sum_k  max_d |cluster_k AND classe_d|
 
@@ -139,7 +137,7 @@ def purity(y_true, labels):
 
 
 def silhouette(X, labels, return_samples=False):
-    """Coefficiente di silhouette (slide 73-76): validazione INTERNA.
+    """Coefficiente di silhouette: validazione INTERNA.
 
     Per ogni punto i:
         a(i) = distanza media dai punti dello STESSO cluster

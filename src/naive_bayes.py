@@ -1,24 +1,24 @@
 """
 Gaussian Naive Bayes -- implementazione da zero (solo numpy).
 
-Notazione del corso (slide "11.BayesianLearning"):
+Notazione:
   m              = numero di esempi di training
   n              = numero di feature
   k              = numero di classi
   c_i            = classe i-esima
 
-Modello generativo + regola MAP (slide 4, 7):
+Modello generativo + regola MAP:
   P(c | x) = P(c) P(x | c) / P(x)        (Bayes)
   predici  argmax_c  P(c) P(x | c)        (l'evidenza P(x) e' costante tra le classi)
 
-Assunzione "naive" di indipendenza condizionata (slide 8):
+Assunzione "naive" di indipendenza condizionata:
   P(x | c) = prod_{j=1}^{n} P(x_j | c)
 
-Feature continue -> verosimiglianza gaussiana (slide 13, 15, 16):
+Feature continue -> verosimiglianza gaussiana:
   P(x_j | c) = N(x_j; mu_{jc}, sigma^2_{jc})
              = 1 / sqrt(2 pi sigma^2) * exp( -(x_j - mu)^2 / (2 sigma^2) )
-  con stima a massima verosimiglianza dei parametri (slide 15):
-  mu_{jc}     = (1/m_c) sum_{i: y=c} x_j^(i)
+  con stima a massima verosimiglianza dei parametri:
+  mu_{jc}      = (1/m_c) sum_{i: y=c} x_j^(i)
   sigma^2_{jc} = (1/m_c) sum_{i: y=c} (x_j^(i) - mu_{jc})^2      (varianza con 1/m)
 
 In pratica si lavora in spazio logaritmico: il prodotto di tante densita' piccole
@@ -47,7 +47,7 @@ class GaussianNaiveBayes:
         self.var_ = None
 
     def fit(self, X, y):
-        """Apprende priori, medie e varianze per ogni classe (slide 9, 15-16).
+        """Apprende priori, medie e varianze per ogni classe.
 
         Per ogni classe stima:
           - il priore P(c) come frazione di esempi di quella classe;
@@ -67,9 +67,9 @@ class GaussianNaiveBayes:
         self.var_ = np.zeros((k, n))
 
         for idx, c in enumerate(self.classes_):
-            Xc = X[y == c]                      # solo gli esempi della classe c
-            self.priors_[idx] = Xc.shape[0] / m  # P(c) = #c / m   (slide 9)
-            self.theta_[idx] = Xc.mean(axis=0)   # mu_{jc}          (slide 15)
+            Xc = X[y == c]                        # solo gli esempi della classe c
+            self.priors_[idx] = Xc.shape[0] / m  # P(c) = #c / m
+            self.theta_[idx] = Xc.mean(axis=0)   # mu_{jc}
             self.var_[idx] = Xc.var(axis=0)      # sigma^2_{jc} con 1/m (ddof=0)
 
         return self
@@ -99,17 +99,16 @@ class GaussianNaiveBayes:
         return jll
 
     def predict(self, X):
-        """Regola MAP (slide 7): assegna la classe col log-posterior piu' alto."""
+        """Regola MAP: assegna la classe col log-posterior piu' alto."""
         jll = self._joint_log_likelihood(X)
         return self.classes_[np.argmax(jll, axis=1)]
 
     def predict_proba(self, X):
         """Posterior normalizzati P(c | x), via softmax stabile sul log-posterior.
 
-        NB: estensione oltre le slide. La classificazione (predict) usa la sola
-        regola MAP -- l'argmax del log-posterior -- e non richiede di normalizzare.
-        Qui normalizziamo solo per ottenere probabilita' leggibili P(c | x),
-        usate ad es. per scegliere un esempio "netto" nell'EDA del notebook.
+        La classificazione (predict) usa la sola regola MAP -- l'argmax del
+        log-posterior -- e non richiede di normalizzare. Qui si normalizza solo
+        per ottenere probabilita' leggibili P(c | x).
         """
         jll = self._joint_log_likelihood(X)
         jll -= jll.max(axis=1, keepdims=True)        # stabilita' numerica

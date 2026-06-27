@@ -1,26 +1,26 @@
 """
 K-means -- implementazione da zero (solo numpy).
 
-Notazione del corso (slide "14.Clustering"):
+Notazione:
   m            = numero di esempi
   n            = numero di feature
   K            = numero di cluster
   mu_k         = centroide del cluster k
   c^(i)        = indice del cluster a cui e' assegnato l'esempio i
 
-Algoritmo (slide 16, 20), si ripete fino a convergenza:
+Algoritmo, si ripete fino a convergenza:
   1) Assegnazione: ogni punto va al centroide piu' vicino
        c^(i) := argmin_k || x^(i) - mu_k ||^2
   2) Aggiornamento: ogni centroide diventa la media dei suoi punti
        mu_k := media dei punti assegnati al cluster k
 
-Obiettivo (distorsione, slide 19):
+Obiettivo (distorsione):
   J = (1/m) sum_i || x^(i) - mu_{c^(i)} ||^2
 K-means minimizza J; ogni passo non puo' farlo aumentare.
 
-Inizializzazione (slide 23-26): K-means converge a un minimo *locale*, quindi:
-  - si fanno piu' restart casuali e si tiene quello con J minore (slide 25);
-  - in alternativa k-means++ sceglie centroidi iniziali ben distanziati (slide 26).
+Inizializzazione: K-means converge a un minimo *locale*, quindi:
+  - si fanno piu' restart casuali e si tiene quello con J minore;
+  - in alternativa k-means++ sceglie centroidi iniziali ben distanziati.
 """
 
 import numpy as np
@@ -74,11 +74,11 @@ class KMeans:
     def _init_centers(self, X, rng):
         m = X.shape[0]
         if self.init == "random":
-            # K esempi distinti scelti a caso (slide 23)
+            # K esempi distinti scelti a caso
             idx = rng.choice(m, size=self.n_clusters, replace=False)
             return X[idx].copy()
 
-        # k-means++ (slide 26): centroidi iniziali ben distanziati
+        # k-means++: centroidi iniziali ben distanziati
         centers = [X[rng.integers(m)]]
         for _ in range(1, self.n_clusters):
             d2 = _sq_dist(X, np.array(centers)).min(axis=1)   # dist^2 al centro piu' vicino
@@ -114,7 +114,7 @@ class KMeans:
         return centers, labels, inertia, it + 1
 
     def fit(self, X):
-        """Esegue n_init restart e tiene quello con distorsione J minima (slide 25)."""
+        """Esegue n_init restart e tiene quello con distorsione J minima."""
         X = np.asarray(X, dtype=float)
         rng = np.random.default_rng(self.random_state)
 
