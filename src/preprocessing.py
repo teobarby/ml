@@ -7,7 +7,7 @@ class StandardScaler:
     """Standardizzazione z-score: (x - media) / deviazione_standard.
 
     La media e la deviazione standard si calcolano SOLO sul train (fit), e poi
-    si applicano a train e test (transform). Cosi' evitiamo il "data leakage":
+    si applicano a train e test (transform). Cosi' si evita il "data leakage":
     nessuna informazione del test entra nel preprocessing.
     """
 
